@@ -2,7 +2,6 @@ package com.gridnine.testing;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDateTime;
 import java.util.List;
 
 public class FlightValidator {
@@ -34,11 +33,12 @@ public class FlightValidator {
      * сегмента и вылетом следующего за ним)
      */
     public static  boolean moreThenTwoHoursOnGround(Flight flight) {
-        Duration twoHours = Duration.ofHours(2);
         List<Segment> segments = flight.getSegments();
+        long onGroundHours = 0L;
         for (int i = 0; i < (segments.size() - 1); i++) {
             Duration diff = Duration.between(segments.get(i).getArrivalDate(), segments.get(i+1).getDepartureDate());
-            if (diff.compareTo(twoHours) > 0) {
+            onGroundHours += diff.toHours();
+            if (onGroundHours > 2) {
                 return false;
             }
         }
