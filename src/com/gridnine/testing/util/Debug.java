@@ -1,7 +1,12 @@
-package com.gridnine.testing;
+package com.gridnine.testing.util;
+
+import com.gridnine.testing.model.Flight;
 
 import java.util.List;
 
+/**
+ * Class for displaying information
+ */
 public class Debug {
 
     public static void Write(String str) {
@@ -9,9 +14,7 @@ public class Debug {
     }
 
     public static void Write(List<Flight> list) {
-        for (Flight item: list) {
-            System.out.println(item);
-        }
+        list.forEach(System.out::println);
     }
 
 }

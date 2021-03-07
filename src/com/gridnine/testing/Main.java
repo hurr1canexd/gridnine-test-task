@@ -1,45 +1,32 @@
 package com.gridnine.testing;
 
-import java.time.Duration;
+import com.gridnine.testing.model.Flight;
+import com.gridnine.testing.service.Filter;
+import com.gridnine.testing.service.FlightValidator;
+import com.gridnine.testing.util.Debug;
+import com.gridnine.testing.util.FlightBuilder;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Main {
     public static void main(String[] args) {
 
-        // TODO: add debug class
         List<Flight> flights = FlightBuilder.createFlights();
 
-        System.out.println("Start list:");
-        printFlightList(flights);
+        Debug.Write("Start list:");
+        Debug.Write(flights);
 
-        List<Flight> flights1 = flights.stream().
-                filter(FlightValidator::departureAfterCurrentTime).
-                collect(Collectors.toList());
+        List<Flight> flights1 = Filter.run(flights, FlightValidator::departureEarlierThanArrival);
+        Debug.Write("\nAfter first rule:");
+        Debug.Write(flights1);
 
-        System.out.println("\nAfter first rule:");
-        printFlightList(flights1);
+        List<Flight> flights2 = Filter.run(flights, FlightValidator::departureAfterCurrentTime);
+        Debug.Write("\nAfter second rule:");
+        Debug.Write(flights2);
 
-        List<Flight> flights2 = flights.stream().
-                filter(FlightValidator::arrivalEarlierThanDeparture).
-                collect(Collectors.toList());
-
-        System.out.println("\nAfter second rule:");
-        printFlightList(flights2);
-
-        List<Flight> flights3 = flights.stream().
-                filter(FlightValidator::moreThenTwoHoursOnGround).
-                collect(Collectors.toList());
-
-        System.out.println("\nAfter third rule:");
-        printFlightList(flights3);
-
-    }
-
-    private static void printFlightList(List<Flight> list) {
-        for (Flight item: list) {
-            System.out.println(item);
-        }
+        List<Flight> flights3 = Filter.run(flights, FlightValidator::lessThanTwoHoursGroundTime);
+        Debug.Write("\nAfter third rule:");
+        Debug.Write(flights3);
     }
 
 }
