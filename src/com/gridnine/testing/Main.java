@@ -1,8 +1,9 @@
 package com.gridnine.testing;
 
 import com.gridnine.testing.model.Flight;
-import com.gridnine.testing.service.Filter;
-import com.gridnine.testing.service.FlightValidator;
+import com.gridnine.testing.rules.DepartureAfterCurrentTimeRule;
+import com.gridnine.testing.rules.DepartureEarlierThanArrivalRule;
+import com.gridnine.testing.rules.LessThanTwoHoursGroundTimeRule;
 import com.gridnine.testing.util.Debug;
 import com.gridnine.testing.util.FlightBuilder;
 
@@ -10,23 +11,27 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-
+        // Getting the initial list
         List<Flight> flights = FlightBuilder.createFlights();
-
         Debug.Write("Start list:");
         Debug.Write(flights);
 
-        List<Flight> flights1 = Filter.run(flights, FlightValidator::departureEarlierThanArrival);
-        Debug.Write("\nAfter first rule:");
-        Debug.Write(flights1);
+        Filter filter = new Filter();
 
-        List<Flight> flights2 = Filter.run(flights, FlightValidator::departureAfterCurrentTime);
-        Debug.Write("\nAfter second rule:");
-        Debug.Write(flights2);
+        // Getting filtered lists
+        filter.setRule(new DepartureEarlierThanArrivalRule());
+        List<Flight> firstRuleFlights = filter.run(flights);
+        Debug.Write("\nFirst rule list:");
+        Debug.Write(firstRuleFlights);
 
-        List<Flight> flights3 = Filter.run(flights, FlightValidator::lessThanTwoHoursGroundTime);
-        Debug.Write("\nAfter third rule:");
-        Debug.Write(flights3);
+        filter.setRule(new DepartureAfterCurrentTimeRule());
+        List<Flight> secondRuleFlights = filter.run(flights);
+        Debug.Write("\nSecond rule list:");
+        Debug.Write(secondRuleFlights);
+
+        filter.setRule(new LessThanTwoHoursGroundTimeRule());
+        List<Flight> thirdRuleFlights = filter.run(flights);
+        Debug.Write("\nThird rule list:");
+        Debug.Write(thirdRuleFlights);
     }
-
 }
